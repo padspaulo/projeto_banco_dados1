@@ -1,0 +1,119 @@
+use ecommerce;
+
+show tables;
+
+insert into clients (Fname, Minit, Lname, CPF, Address)
+	values('Maria','M','Silva',123456789, 'rua silva 9, Carangola'),
+			('Matheus','O','Pimentel',134436789, 'rua alameda 289, Centro'),
+            ('Ricardo','F','França',124566589, 'rua laranjeira 11, flores'),
+            ('Julia','S','Assis',978498979, 'Avenida Koller 17, flores'),
+            ('Maria','M','Silva',1233445589, 'rua prata 73, Carangola'),
+            ('Isabella','M','Cruz',56767774, 'rua sdas flores 28, Centro');
+            
+            
+insert into product (Pname, classification_kids, category, avaliação, size) values
+						('Fone',false,'Eletronico','4',null),
+                        ('Barbie',true,'Eletronico','3',null),
+                        ('Body',true,'Vestimenta','5',null),
+                        ('Microfone',false,'Eletronico','4',null),
+                        ('Sofa',false,'Móveis','3','3x57x80'),
+                        ('Cadeira',true,'Móveis','3','3x57x12');
+                        
+select * from clients;
+select * from product;
+
+insert into orders (idOrderClient, orderStatus, orderDescription, sendValue, paymentCash) values
+							(1, default, 'via aplicativo', null, 1),
+                            (2, default, 'via aplicativo', 50, 0),
+                            (3, 'Confirmado', null, null, 1),
+                            (4, defaukt, 'web site', 150, 0);
+                            
+drop table orders;
+                            
+select * from orders;
+insert into productOrder (idPOproduct, idPOorder, poQuantity, poStatus) values
+								(1,1,2,null),
+                                (2,1,1,null),
+                                (3,2,1,null);
+
+select * from orders;    
+select * from product;     
+select * from productOrder;   
+select * from clients;      
+
+delete from orders where idOrderClient in (1,2,3,4);             
+
+insert into productStorage (storageLocation, quantity) values
+				('Rio de janeiro',1000),
+                ('Rio de janeiro',500),
+                ('Sao paulo',10),
+                ('Sao paulo',100);
+                
+insert into productStorage (storageLocation, quantity) values
+					('Brasilia',60),
+					('Sao paulo',10);
+                    
+insert into storageLocation (idLproduct, idLstorage, location) values
+					(1,2,'rj'),
+                    (2,6,'go');
+                    
+insert into supplier (SocialName, CNPJ, contact) values
+						('Alameda',121434554,'122343'),
+						('Eletronicos',12146,'127643'),
+						('Eletronicos Alameda',5656434554,'762343');
+                        
+insert into productSupplier (idPsSupplier, idPsProduct, quantity) values
+							(1,1,500),
+                            (1,2,400),
+                            (2,4,633),
+                            (3,3,5),
+                            (2,5,10);
+                            
+select * from productSupplier;      
+
+insert into seller (SocialName, AbstName, CNPJ, CPF, location, contact) values
+						('tech',null, 123434678,null,'Rio',2343555),
+                        ('botique',null, null,123434678,'Rio',43345555),
+                        ('kids',null,345423434678,null,'sao paulo',232343555);
+			
+insert into productSeller (idPseller, idPproduct, prodQuantity) values
+						(1,6,80),
+                        (2,5,10);
+                        
+select * from product; 
+
+-- exercicios de queries propostos
+-- utilizar banco especifico
+use ecommerce;
+-- mostrar tabelas 
+show tables; 
+-- Selecionar todos elementos da tabela
+select * from product; 
+-- Selecionar com clausula where 
+select * from product where idProduct = 2;
+-- Selecionar por atributo
+select Pname, category from product where idProduct = 3;
+-- Selecionar com contagem de clientes
+select count(*) from clients;
+-- Selecionar da tabela clients com denominação c e tabela orders o onde idclient = idOrderClient
+select * from clients c, orders o where c.idClient = idOrderClient;
+-- Instrução anterior com concatenação de nome e denominação Client bem como o order
+select concat(Fname,' ',Lname) as Client, idOrder as Request from clients c, orders o where c.idClient = idOrderClient;
+-- Inserir linha em productSeller nos atributos indicados entre os parentesis com os respectivos valores
+insert into productSeller (idPseller, idPproduct, prodQuantity) values
+						(3,2,50);           
+-- Selecionar das tabelas clients e orders com clausula where agrupando por idOrder  
+select Fname, Address from clients c, orders o
+						where c.idClient = idOrderClient
+                        group by idOrder;
+-- Selecionar usando inner join das tabelas clients orders e productOrder com as clausulas.Quantos pedidos foram realizados
+select * from clients;
+select * from orders;
+select * from productOrder;
+select c.idClient, Fname, count(*) from clients c inner join orders o On c.idClient = o.idOrderClient
+						inner join productOrder p on p.idPOorder = o.idOrder
+                        group by idClient;
+-- Selecionar com having superior a 40 na tabela orders
+select * from orders group by paymentCash
+						having sum(sendValue) > 40
+                        order by idOrderClient;
